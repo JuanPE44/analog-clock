@@ -1,11 +1,11 @@
 export class AnalogClock {
+  private hour: number;
+  private minute: number;
+  private second: number;
   private readonly GRADE_HOUR = 360 / 12;
   private readonly GRADE_MINUTE = 360 / 60;
   private readonly HOURS = 12;
   private readonly MINUTES = 60;
-  private hour = 1;
-  private minute = 1;
-  private second = 1;
   private gradeSecond = 0;
   private gradeMinute = 0;
   private gradeHour = 0;
@@ -20,6 +20,13 @@ export class AnalogClock {
   private counterclockwiseSecond = this.createElementDiv(
     "counterclockwise-second"
   );
+
+  constructor() {
+    const now = new Date();
+    this.hour = now.getHours();
+    this.minute = now.getMinutes();
+    this.second = now.getSeconds();
+  }
 
   public init() {
     this.lastTime = 0; // Inicializar el tiempo
@@ -65,10 +72,6 @@ export class AnalogClock {
   }
 
   private initCounterclockwisesTime() {
-    const now = new Date();
-    this.hour = now.getHours();
-    this.minute = now.getMinutes();
-    this.second = now.getSeconds();
     this.gradeSecond = this.second * this.GRADE_MINUTE;
     this.gradeMinute = this.minute * this.GRADE_MINUTE;
     this.gradeHour =
