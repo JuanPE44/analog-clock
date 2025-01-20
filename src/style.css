@@ -1,16 +1,5 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --color-clock: #db4141;
 }
 
 * {
@@ -20,6 +9,7 @@
 }
 
 body {
+  background-color: #222;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -31,7 +21,7 @@ body {
 }
 
 .container-clock {
-  border: 3px solid red;
+  border: 3px solid var(--color-clock);
   border-radius: 50%;
 }
 
@@ -80,7 +70,7 @@ body {
   position: absolute;
   width: 1px;
   height: 5px;
-  background-color: red;
+  background-color: var(--color-clock);
 }
 
 .center {
@@ -90,16 +80,70 @@ body {
   right: 0;
   bottom: 0;
   margin: auto;
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background-color: red;
+  background-color: var(--color-clock);
+  z-index: 30;
 }
 
 .line-hour {
   position: absolute;
   width: 3px;
   height: 8px;
-  background-color: red;
+  background-color: var(--color-clock);
   border-radius: 0 0 5px 5px;
+}
+
+.counterclockwise-hour {
+  width: 10px;
+  height: 40%;
+}
+
+.counterclockwise-hour::after {
+  position: absolute;
+  content: "";
+  height: 50%;
+  width: 100%;
+  background: #fff;
+}
+
+.counterclockwise-minute {
+  width: 8px;
+  height: 60%;
+}
+
+.counterclockwise-minute::after {
+  position: absolute;
+  content: "";
+  height: 50%;
+  width: 100%;
+  background: #bbb;
+}
+
+.counterclockwise-second {
+  width: 6px;
+  height: 75%;
+}
+
+.counterclockwise-second::after {
+  position: absolute;
+  content: "";
+  height: 50%;
+  width: 100%;
+  background: #555;
+}
+
+.counterclockwise-hour,
+.counterclockwise-minute,
+.counterclockwise-second {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  transition: transform 0.5s ease-in-out;
+  overflow: hidden;
+  border-radius: 40%;
 }

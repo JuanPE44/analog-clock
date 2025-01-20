@@ -1,29 +1,101 @@
 export class AnalogClock {
   private readonly GRADE_HOUR = 360 / 12;
   private readonly GRADE_MINUTE = 360 / 60;
-  private readonly GRADE_SECOND = 360 / 12;
-  private hours = 12;
-  private minutes = 60;
-  private seconds = 60;
+  private readonly HOURS = 12;
+  private readonly MINUTES = 60;
+  private hour = 1;
+  private minute = 1;
+  private second = 1;
+  private gradeSecond = 0;
+  private gradeMinute = 0;
+  private gradeHour = 0;
+  private FPS = 1;
+  private lastTime = 0;
+  private requestID = 0;
 
+  private counterclockwiseHour = this.createElementDiv("counterclockwise-hour");
+  private counterclockwiseMinute = this.createElementDiv(
+    "counterclockwise-minute"
+  );
+  private counterclockwiseSecond = this.createElementDiv(
+    "counterclockwise-second"
+  );
+
+  public init() {
+    this.lastTime = 0; // Inicializar el tiempo
+    this.requestID = window.requestAnimationFrame(this.loop.bind(this));
+  }
+
+  private loop(currentTime: number) {
+    const deltaTime = (currentTime - this.lastTime) / 1000;
+
+    if (deltaTime >= 1 / this.FPS) {
+      this.updateCounterclockwises();
+      this.lastTime = currentTime;
+    }
+
+    this.requestID = window.requestAnimationFrame(this.loop.bind(this));
+  }
   public render() {
     const containerClock = this.createElementDiv("container-clock");
     const clock = this.createElementDiv("clock");
+    // punto central
     const center = this.createElementDiv("center");
     containerClock.appendChild(clock);
     clock.appendChild(center);
+    clock.appendChild(this.counterclockwiseHour);
+    clock.appendChild(this.counterclockwiseMinute);
+    clock.appendChild(this.counterclockwiseSecond);
 
-    for (let i: number = 1; i <= this.hours; i++) {
+    // lineas de las horas
+    for (let i: number = 1; i <= this.HOURS; i++) {
       const hourElement = this.createHourElement(i);
       clock.appendChild(hourElement);
     }
 
-    for (let i: number = 1; i <= this.minutes; i++) {
+    // lineas de los minutos
+    for (let i: number = 1; i <= this.MINUTES; i++) {
       const minuteElement = this.createMinuteElement(i);
       clock.appendChild(minuteElement);
     }
 
-    return this.outerHTML(containerClock);
+    this.initCounterclockwisesTime();
+
+    return containerClock;
+  }
+
+  private initCounterclockwisesTime() {
+    const now = new Date();
+    this.hour = now.getHours();
+    this.minute = now.getMinutes();
+    this.second = now.getSeconds();
+    this.gradeSecond = this.second * this.GRADE_MINUTE;
+    this.gradeMinute = this.minute * this.GRADE_MINUTE;
+    this.gradeHour =
+      this.hour * this.GRADE_HOUR + (this.GRADE_HOUR / 60) * this.minute;
+  }
+
+  private updateCounterclockwises() {
+    //const ampm = this.hour >= 12 ? "PM" : "AM";
+    this.hour = this.hour % 12 || 12;
+    this.gradeSecond += this.GRADE_MINUTE;
+    if (this.gradeSecond % 360 === 0) {
+      this.gradeMinute += this.GRADE_MINUTE;
+      this.gradeHour += this.GRADE_HOUR / 60;
+    }
+
+    this.counterclockwiseHour.style.setProperty(
+      "transform",
+      `rotate(${this.gradeHour}deg)`
+    );
+    this.counterclockwiseMinute.style.setProperty(
+      "transform",
+      `rotate(${this.gradeMinute}deg)`
+    );
+    this.counterclockwiseSecond.style.setProperty(
+      "transform",
+      `rotate(${this.gradeSecond}deg)`
+    );
   }
 
   private createMinuteElement(i: number) {
@@ -52,9 +124,5 @@ export class AnalogClock {
     const element = document.createElement("div");
     element.classList.add(className);
     return element;
-  }
-
-  private outerHTML(node: HTMLDivElement) {
-    return node.outerHTML || new XMLSerializer().serializeToString(node);
   }
 }
