@@ -11,7 +11,7 @@ export class AnalogClock {
   private gradeHour = 0;
   private FPS = 1;
   private lastTime = 0;
-  private requestID = 0;
+  public requestID = 0;
 
   private counterclockwiseHour = this.createElementDiv("counterclockwise-hour");
   private counterclockwiseMinute = this.createElementDiv(
